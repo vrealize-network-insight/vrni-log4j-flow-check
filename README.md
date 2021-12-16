@@ -23,4 +23,4 @@ If you are running this on the [vRealize Network Insight Toolkit](https://flings
 
 ## Example
 
-https://github.com/vrealize-network-insight/vrni-log4j-flow-check/raw/12b8df01073f22a2c166a97e6a0714e92ed3144c/example/example.gif
+![example output](https://github.com/vrealize-network-insight/vrni-log4j-flow-check/raw/12b8df01073f22a2c166a97e6a0714e92ed3144c/example/example.gif)
