@@ -70,6 +70,9 @@ def main(args):
                 print(bcolors.WARNING + "More info: https://{}/#search/query/%22flows%20where%20source%20IP%20%3D%20{}%22/timemeta/".format(
                     args.platform_ip, validated_ip) + "{"+"%22timePreset%22%3A%22Now%22"+"}"+"/sourceString/%22USER%22")
 
+            # make sure we don't hit the vRNI throttle and start getting 429 errors
+            time.sleep(0.025)
+
 
 if __name__ == '__main__':
     args = parse_arguments()
