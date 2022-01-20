@@ -10,6 +10,11 @@ import logging
 import requests
 
 VRNIC_FQDN = "api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_US = "api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_UK = "uk.api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_JP = "jp.api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_AU = "au.api.mgmt.cloud.vmware.com"
+VRNIC_FQDN_DE = "de.api.mgmt.cloud.vmware.com"
 
 
 def get_api_client(args):
@@ -63,6 +68,23 @@ def get_onprem_api_client(args):
 
 
 def get_vrnic_api_client(args):
+    # determine vRNI Cloud location and use appropriate URL
+    if args.cloud_location == "UK":
+        VRNIC_FQDN = VRNIC_FQDN_UK
+    elif args.cloud_location == "JP":
+        VRNIC_FQDN = VRNIC_FQDN_JP
+    elif args.cloud_location == "AU":
+        VRNIC_FQDN = VRNIC_FQDN_AU
+    elif args.cloud_location == "DE":
+        VRNIC_FQDN = VRNIC_FQDN_DE
+    else:
+        VRNIC_FQDN = VRNIC_FQDN_US
+
+    # override Cloud API url if the cloud_api_url param is set
+    if args.cloud_api_url != "":
+        VRNIC_FQDN = args.cloud_api_url
+
+    # build API client
     public_api_url = "https://{}/ni/api/ni".format(VRNIC_FQDN)
     public_api_client = swagger_client.ApiClient(host=public_api_url)
     config = swagger_client.Configuration()
@@ -89,6 +111,13 @@ def domain_type(type):
     if not type in ['LOCAL', 'LDAP', 'VIDM']:
         raise argparse.ArgumentTypeError(
             'argument domain type must be one of type LOCAL, LDAP or VIDM')
+    return type
+
+
+def cloud_location_type(type):
+    if not type in ['US', 'UK', 'JP', 'AU', 'DE']:
+        raise argparse.ArgumentTypeError(
+            'Cloud location type must be one of US, UK, JP, AU, or DE')
     return type
 
 
@@ -121,7 +150,7 @@ def parse_arguments():
     parser.add_argument('--vidm_token', action='store',
                         help='Provide vidm_token')
 
-    # Network Insight as a service (VRNIC) parameters.
+    # vRealize Network Insight Cloud (VRNIC) parameters.
     # Procedure to generate api token
     #    1. On the VMware Cloud Services toolbar, click your user name and select My Account > API Tokens.
     #    2. Click on Generate Token.
@@ -129,6 +158,11 @@ def parse_arguments():
     #    4. Click on generate and then Copy button on Token generated popup and pass it as input parameter to api_token
     parser.add_argument('--api_token', action='store',
                         help='Provide VRNIC api token')
+    parser.add_argument('--cloud_location', action='store', type=cloud_location_type,
+                        default="US", help='vRNI Cloud location (US, UK, JP, AU, or DE. default: US)')
+
+    parser.add_argument('--cloud_api_url', action='store',
+                        default="", help='Optional customer vRNI Cloud API URL. Overrides the cloud_location parameter. Example: uk.api.mgmt.cloud.vmware.com')
 
     return parser
 
