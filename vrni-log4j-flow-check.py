@@ -67,8 +67,12 @@ def main(args):
                 time.sleep(0.025)
 
             if api_response.entity_list_response['total_count'] > 0:
-                print(bcolors.WARNING + "More info: https://{}/#search/query/%22flows%20where%20source%20IP%20%3D%20{}%22/timemeta/".format(
-                    args.platform_ip, validated_ip) + "{"+"%22timePreset%22%3A%22Now%22"+"}"+"/sourceString/%22USER%22")
+                if args.platform_ip:
+                    print(bcolors.WARNING + "More info: https://{}/#search/query/%22flows%20where%20source%20IP%20%3D%20{}%22/timemeta/".format(
+                        args.platform_ip, validated_ip) + "{"+"%22timePreset%22%3A%22Now%22"+"}"+"/sourceString/%22USER%22")
+                else:
+                    print(bcolors.WARNING + "More info: https://www.mgmt.cloud.vmware.com/ni/#search/query/%22flows%20where%20source%20IP%20%3D%20{}%22/timemeta/".format(
+                        validated_ip) + "{"+"%22timePreset%22%3A%22Now%22"+"}"+"/sourceString/%22USER%22")
 
             # make sure we don't hit the vRNI throttle and start getting 429 errors
             time.sleep(0.025)
